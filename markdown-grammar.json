@@ -6,7 +6,7 @@
 			"include": "#mlir-code-block"
 		},
 		{
-			"include": "#pdll-code-block"
+			"include": "#verilog-code-block"
 		},
 		{
 			"include": "#tablegen-code-block"
@@ -46,8 +46,8 @@
 				}
 			]
 		},
-		"pdll-code-block": {
-			"begin": "(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(pdll)(\\s+[^`~]*)?$)",
+		"verilog-code-block": {
+			"begin": "(^|\\G)(\\s*)(\\`{3,}|~{3,})\\s*(?i:(verilog)(\\s+[^`~]*)?$)",
 			"name": "markup.fenced_code.block.markdown",
 			"end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
 			"beginCaptures": {
@@ -70,10 +70,10 @@
 				{
 					"begin": "(^|\\G)(\\s*)(.*)",
 					"while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
-					"contentName": "meta.embedded.block.pdll",
+					"contentName": "meta.embedded.block.verilog",
 					"patterns": [
 						{
-							"include": "source.pdll"
+							"include": "source.verilog"
 						}
 					]
 				}

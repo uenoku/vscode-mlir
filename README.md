@@ -3,7 +3,7 @@
 The [MLIR extension](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-mlir)
 provides language IDE features for [MLIR](https://mlir.llvm.org/) related
 languages: [MLIR](#mlir---mlir-textual-assembly-format),
-[PDLL](#pdll---mlir-pdll-pattern-files), and [TableGen](#td---tablegen-files)
+[Verilog](#verilog---mlir-verilog-pattern-files), and [TableGen](#td---tablegen-files)
 
 ## `.mlir` - MLIR textual assembly format:
 
@@ -109,14 +109,14 @@ If `mlir-lsp-server` is not found within your workspace path, you must specify
 the path of the server via the `mlir.server_path` setting. The path of the
 server may be absolute or relative within your workspace.
 
-## `.pdll` - MLIR PDLL pattern files:
+## `.verilog` - MLIR Verilog pattern files:
 
 The MLIR extension adds language support for the
-[PDLL pattern language](https://mlir.llvm.org/docs/PDLL/).
+[Verilog pattern language](https://mlir.llvm.org/docs/Verilog/).
 
 ### Features
 
-- Syntax highlighting for `.pdll` files and `pdll` markdown blocks
+- Syntax highlighting for `.verilog` files and `verilog` markdown blocks
 - go-to-definition and cross references
 - Types and documentation on hover
 - Code completion and signature help
@@ -127,7 +127,7 @@ The MLIR extension adds language support for the
 The language server actively runs verification as you type, showing any
 generated diagnostics in-place.
 
-![IMG](https://mlir.llvm.org/mlir-pdll-lsp-server/diagnostics.png)
+![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/diagnostics.png)
 
 #### Code completion and signature help
 
@@ -136,7 +136,7 @@ rewrites, dialects, operations, etc are available in this context. The server
 also provides information about the structure of constraint and rewrite calls,
 operations, and more as you fill them in.
 
-![IMG](https://mlir.llvm.org/mlir-pdll-lsp-server/code_complete.gif)
+![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/code_complete.gif)
 
 #### Cross-references
 
@@ -146,37 +146,37 @@ Cross references allow for navigating the code base.
 
 Jump to the definition of a symbol under the cursor:
 
-![IMG](https://mlir.llvm.org/mlir-pdll-lsp-server/goto_def.gif)
+![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/goto_def.gif)
 
 If ODS information is available, we can also jump to the definition of operation
 names and more:
 
-![IMG](https://mlir.llvm.org/mlir-pdll-lsp-server/goto_def_ods.gif)
+![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/goto_def_ods.gif)
 
 ##### Find references
 
 Show all references of the symbol under the cursor.
 
-![IMG](https://mlir.llvm.org/mlir-pdll-lsp-server/find_references.gif)
+![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/find_references.gif)
 
 #### Hover
 
 Hover over a symbol to see more information about it, such as its type,
 documentation, and more.
 
-![IMG](https://mlir.llvm.org/mlir-pdll-lsp-server/hover.png)
+![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/hover.png)
 
 If ODS information is available, we can also show information directly from the
 operation definitions:
 
-![IMG](https://mlir.llvm.org/mlir-pdll-lsp-server/hover_ods.png)
+![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/hover_ods.png)
 
 #### Navigation
 
 The language server will also inform the editor about the structure of symbols
 within the IR.
 
-![IMG](https://mlir.llvm.org/mlir-pdll-lsp-server/navigation.gif)
+![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/navigation.gif)
 
 #### View intermediate output
 
@@ -185,7 +185,7 @@ stages of compilation, such as the AST, the `.mlir` containing the generated
 PDL, and the generated C++ glue. This is a custom LSP extension, and is not
 necessarily provided by all IDE clients.
 
-![IMG](https://mlir.llvm.org/mlir-pdll-lsp-server/view_output.gif)
+![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/view_output.gif)
 
 #### Inlay hints
 
@@ -197,28 +197,28 @@ with code. Hints may be shown for:
 - names of operand and result groups
 - constraint and rewrite arguments
 
-![IMG](https://mlir.llvm.org/mlir-pdll-lsp-server/inlay_hints.png)
+![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/inlay_hints.png)
 
 ### Setup
 
-#### `mlir-pdll-lsp-server`
+#### `mlir-verilog-lsp-server`
 
-The various `.pdll` language features require the
-[`mlir-pdll-lsp-server` language server](https://mlir.llvm.org/docs/Tools/MLIRLSP/#pdll-lsp-language-server--mlir-pdll-lsp-server).
-If `mlir-pdll-lsp-server` is not found within your workspace path, you must
-specify the path of the server via the `mlir.pdll_server_path` setting. The path
+The various `.verilog` language features require the
+[`mlir-verilog-lsp-server` language server](https://mlir.llvm.org/docs/Tools/MLIRLSP/#verilog-lsp-language-server--mlir-verilog-lsp-server).
+If `mlir-verilog-lsp-server` is not found within your workspace path, you must
+specify the path of the server via the `mlir.verilog_server_path` setting. The path
 of the server may be absolute or relative within your workspace.
 
 #### Project setup
 
-To properly understand and interact with `.pdll` files, the language server must
+To properly understand and interact with `.verilog` files, the language server must
 understand how the project is built (compile flags).
-[`pdll_compile_commands.yml` files](https://mlir.llvm.org/docs/Tools/MLIRLSP/#compilation-database)
+[`verilog_compile_commands.yml` files](https://mlir.llvm.org/docs/Tools/MLIRLSP/#compilation-database)
 related to your project should be provided to ensure files are properly
 processed. These files can usually be generated by the build system, and the
 server will attempt to find them within your `build/` directory. If not
-available in or a unique location, additional `pdll_compile_commands.yml` files
-may be specified via the `mlir.pdll_compilation_databases` setting. The paths of
+available in or a unique location, additional `verilog_compile_commands.yml` files
+may be specified via the `mlir.verilog_compilation_databases` setting. The paths of
 these databases may be absolute or relative within your workspace.
 
 ## `.td` - TableGen files:

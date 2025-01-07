@@ -4,7 +4,7 @@ import {Command} from '../../command';
 import {MLIRContext} from '../../mlirContext';
 
 /**
- * The parameters to the pdll/viewOutput command. These parameters are:
+ * The parameters to the verilog/viewOutput command. These parameters are:
  * - `uri`: The URI of the file to view.
  * - `kind`: The kind of the output to generate.
  */
@@ -17,20 +17,20 @@ type ViewOutputParams = Partial<{uri : string, kind : string}>;
 type ViewOutputResult = Partial<{output : string}>;
 
 /**
- * A command that displays the output of the current PDLL document.
+ * A command that displays the output of the current Verilog document.
  */
-export class ViewPDLLCommand extends Command {
-  constructor(context: MLIRContext) { super('mlir.viewPDLLOutput', context); }
+export class ViewVerilogCommand extends Command {
+  constructor(context: MLIRContext) { super('mlir.viewVerilogOutput', context); }
 
   async execute() {
     const editor = vscode.window.activeTextEditor;
-    if (editor.document.languageId != 'pdll')
+    if (editor.document.languageId != 'verilog')
       return;
 
     // Check to see if a language client is active for this document.
-    const pdllClient =
-        this.context.getLanguageClient(editor.document.uri, "pdll");
-    if (!pdllClient) {
+    const verilogClient =
+        this.context.getLanguageClient(editor.document.uri, "verilog");
+    if (!verilogClient) {
       return;
     }
 
@@ -47,7 +47,7 @@ export class ViewPDLLCommand extends Command {
       kind : outputType,
     };
     const result: ViewOutputResult|undefined =
-        await pdllClient.sendRequest('pdll/viewOutput', outputParams);
+        await verilogClient.sendRequest('verilog/viewOutput', outputParams);
     if (!result || result.output.length === 0) {
       return;
     }

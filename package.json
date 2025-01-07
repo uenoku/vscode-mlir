@@ -15,7 +15,7 @@
   "keywords": [
     "LLVM",
     "MLIR",
-    "PDLL",
+    "Verilog",
     "TableGen",
     "tblgen",
     "tablegen"
@@ -24,7 +24,7 @@
     "onFileSystem:mlir.bytecode-mlir",
     "onCustomEditor:mlir.bytecode",
     "onLanguage:mlir",
-    "onLanguage:pdll",
+    "onLanguage:verilog",
     "onLanguage:tablegen"
   ],
   "main": "./out/extension",
@@ -84,15 +84,16 @@
         "id": "mlir-injection"
       },
       {
-        "id": "pdll",
+        "id": "verilog",
         "aliases": [
-          "PDLL",
-          "pdll"
+          "Verilog",
+          "verilog"
         ],
         "extensions": [
-          ".pdll"
+          ".sv",
+          ".v"
         ],
-        "configuration": "./pdll-language-configuration.json"
+        "configuration": "./verilog-language-configuration.json"
       },
       {
         "id": "tablegen",
@@ -121,7 +122,7 @@
         ],
         "embeddedLanguages": {
           "meta.embedded.block.mlir": "mlir",
-          "meta.embedded.block.pdll": "pdll",
+          "meta.embedded.block.verilog": "verilog",
           "meta.embedded.block.tablegen": "tablegen"
         }
       },
@@ -136,9 +137,9 @@
         }
       },
       {
-        "language": "pdll",
-        "scopeName": "source.pdll",
-        "path": "./pdll-grammar.json"
+        "language": "verilog",
+        "scopeName": "source.verilog",
+        "path": "./verilog-grammar.json"
       },
       {
         "language": "tablegen",
@@ -155,15 +156,15 @@
           "type": "string",
           "description": "The file path of the mlir-lsp-server executable."
         },
-        "mlir.pdll_server_path": {
+        "mlir.verilog_server_path": {
           "scope": "resource",
           "type": "string",
-          "description": "The file path of the mlir-pdll-lsp-server executable."
+          "description": "The file path of the mlir-verilog-lsp-server executable."
         },
-        "mlir.pdll_compilation_databases": {
+        "mlir.verilog_compilation_databases": {
           "scope": "resource",
           "type": "array",
-          "description": "A list of `pdll_compile_commands.yml` database files containing information about .pdll files processed by the server."
+          "description": "A list of `verilog_compile_commands.yml` database files containing information about .verilog files processed by the server."
         },
         "mlir.tablegen_server_path": {
           "scope": "resource",
@@ -198,16 +199,16 @@
         "title": "mlir: Restart language server"
       },
       {
-        "command": "mlir.viewPDLLOutput",
-        "title": "mlir-pdll: View PDLL output"
+        "command": "mlir.viewVerilogOutput",
+        "title": "mlir-verilog: View Verilog output"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "mlir.viewPDLLOutput",
+          "command": "mlir.viewVerilogOutput",
           "group": "z_commands",
-          "when": "editorLangId == pdll"
+          "when": "editorLangId == verilog"
         }
       ]
     }

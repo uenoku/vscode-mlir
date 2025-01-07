@@ -67,8 +67,8 @@ export class MLIRContext implements vscode.Disposable {
     let serverSettingName: string;
     if (languageId === 'mlir') {
       serverSettingName = 'server_path';
-    } else if (languageId === 'pdll') {
-      serverSettingName = 'pdll_server_path';
+    } else if (languageId === 'verilog') {
+      serverSettingName = 'verilog_server_path';
     } else if (languageId === 'tablegen') {
       serverSettingName = 'tablegen_server_path';
     } else {
@@ -140,15 +140,15 @@ export class MLIRContext implements vscode.Disposable {
   }
 
   /**
-   *  Prepare the server options for a PDLL server, e.g. populating any
+   *  Prepare the server options for a Verilog server, e.g. populating any
    *  accessible compilation databases.
    */
-  async preparePDLLServerOptions(workspaceFolder: vscode.WorkspaceFolder,
+  async prepareVerilogServerOptions(workspaceFolder: vscode.WorkspaceFolder,
                                  configsToWatch: string[],
                                  pathsToWatch: string[],
                                  additionalServerArgs: string[]) {
     await this.prepareCompilationDatabaseServerOptions(
-        'pdll', workspaceFolder, configsToWatch, pathsToWatch,
+        'verilog', workspaceFolder, configsToWatch, pathsToWatch,
         additionalServerArgs);
   }
 
@@ -178,8 +178,8 @@ export class MLIRContext implements vscode.Disposable {
     let additionalServerArgs: string[] = [];
 
     // Initialize additional configurations for this server.
-    if (languageName === 'pdll') {
-      await this.preparePDLLServerOptions(workspaceFolder, configsToWatch,
+    if (languageName === 'verilog') {
+      await this.prepareVerilogServerOptions(workspaceFolder, configsToWatch,
                                           filepathsToWatch,
                                           additionalServerArgs);
     } else if (languageName == 'tablegen') {
@@ -303,8 +303,8 @@ export class MLIRContext implements vscode.Disposable {
    * Given a server setting, return the default server path.
    */
   static getDefaultServerFilename(serverSettingName: string): string {
-    if (serverSettingName === 'pdll_server_path') {
-      return 'mlir-pdll-lsp-server';
+    if (serverSettingName === 'verilog_server_path') {
+      return 'mlir-verilog-lsp-server';
     }
     if (serverSettingName === 'server_path') {
       return 'mlir-lsp-server';

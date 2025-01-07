@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 import {registerMLIRExtensions} from './MLIR/mlir';
 import {MLIRContext} from './mlirContext';
-import {registerPDLLExtensions} from './PDLL/pdll';
+import {registerVerilogExtensions} from './Verilog/verilog';
 
 /**
  *  This method is called when the extension is activated. The extension is
@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
         await mlirContext.activate(outputChannel);
       }));
   registerMLIRExtensions(context, mlirContext);
-  registerPDLLExtensions(context, mlirContext);
+  registerVerilogExtensions(context, mlirContext);
 
   mlirContext.activate(outputChannel);
 }

@@ -1,7 +1,7 @@
 {
-  "name": "PDLL",
+  "name": "Verilog",
   "fileTypes": [
-    "pdll"
+    "verilog"
   ],
   "patterns": [
     {
@@ -35,67 +35,67 @@
   "repository": {
     "comment": {
       "match": "\/\/.*$",
-      "name": "comment.line.double-slash.pdll"
+      "name": "comment.line.double-slash.verilog"
     },
     "string": {
-      "name": "string.quoted.double.pdll",
+      "name": "string.quoted.double.verilog",
       "begin": "\"",
       "end": "\"",
       "beginCaptures": {
         "0": {
-          "name": "punctuation.definition.string.begin.pdll"
+          "name": "punctuation.definition.string.begin.verilog"
         }
       },
       "patterns": [
         {
           "match": "\\\\[nt\"]",
-          "name": "constant.character.escape.pdll"
+          "name": "constant.character.escape.verilog"
         },
         {
           "match": "\\\\.",
-          "name": "invalid.illegal.pdll"
+          "name": "invalid.illegal.verilog"
         }
       ],
       "endCaptures": {
         "0": {
-          "name": "punctuation.definition.string.end.pdll"
+          "name": "punctuation.definition.string.end.verilog"
         }
       }
     },
     "string_block": {
-      "name": "string.quoted.triple.pdll",
+      "name": "string.quoted.triple.verilog",
       "begin": "\\[{",
       "end": "}]",
       "beginCaptures": {
         "0": {
-          "name": "punctuation.definition.string.begin.pdll"
+          "name": "punctuation.definition.string.begin.verilog"
         }
       },
       "patterns": [
         {
           "match": "\\\\[nt\"]",
-          "name": "constant.character.escape.pdll"
+          "name": "constant.character.escape.verilog"
         },
         {
           "match": "\\\\.",
-          "name": "invalid.illegal.pdll"
+          "name": "invalid.illegal.verilog"
         }
       ],
       "endCaptures": {
         "0": {
-          "name": "punctuation.definition.string.end.pdll"
+          "name": "punctuation.definition.string.end.verilog"
         }
       }
     },
     "integer": {
       "match": "[0-9]+",
-      "name": "constant.numeric.pdll"
+      "name": "constant.numeric.verilog"
     },
     "include": {
       "patterns": [
         {
           "match": "(#include)",
-          "name": "keyword.control.pdll"
+          "name": "keyword.control.verilog"
         }
       ]
     },
@@ -105,13 +105,13 @@
           "match": "\\b([aA-zZ_0-9]*)\\b\\s*:\\s*([aA-zZ_0-9]+)\\b(\\<([^\\>]+)\\>)?",
           "captures": {
             "1": {
-              "name": "variable.parameter.pdll"
+              "name": "variable.parameter.verilog"
             },
             "2": {
-              "name": "entity.name.type.pdll"
+              "name": "entity.name.type.verilog"
             },
             "4": {
-              "name": "variable.other.enummember.pdll"
+              "name": "variable.other.enummember.verilog"
             }
           }
         },
@@ -119,10 +119,10 @@
           "match": "(\\(|\\>|,)\\s*([aA-zZ_0-9]+)\\b(\\<([^\\>]+)\\>)?\\s*(?=[^:])",
           "captures": {
             "2": {
-              "name": "entity.name.type.pdll"
+              "name": "entity.name.type.verilog"
             },
             "4": {
-              "name": "variable.other.enummember.pdll"
+              "name": "variable.other.enummember.verilog"
             }
           }
         }
@@ -134,10 +134,10 @@
           "begin": "\\b(Constraint)\\b\\s*(\\b[aA-zZ_0-9]*\\b)?",
           "beginCaptures": {
             "1": {
-              "name": "keyword.other.pdll"
+              "name": "keyword.other.verilog"
             },
             "2": {
-              "name": "entity.name.type.pdll"
+              "name": "entity.name.type.verilog"
             }
           },
           "patterns": [
@@ -191,10 +191,10 @@
           "begin": "\\b(Rewrite)\\b\\s*(\\b[aA-zZ_0-9]*\\b)?",
           "beginCaptures": {
             "1": {
-              "name": "keyword.other.pdll"
+              "name": "keyword.other.verilog"
             },
             "2": {
-              "name": "entity.name.function.pdll"
+              "name": "entity.name.function.verilog"
             }
           },
           "patterns": [
@@ -246,22 +246,22 @@
       "patterns": [
         {
           "match": "\\b(with)\\b",
-          "name": "keyword.other.pdll"
+          "name": "keyword.other.verilog"
         },
         {
           "match": "\\b(benefit)\\b\\(([0-9]+)\\)",
           "captures": {
             "1": {
-              "name": "entity.name.variable.pdll"
+              "name": "entity.name.variable.verilog"
             },
             "2": {
-              "name": "constant.numeric.pdll"
+              "name": "constant.numeric.verilog"
             }
           }
         },
         {
           "match": "\\b(recursion)\\b",
-          "name": "entity.name.variable.pdll"
+          "name": "entity.name.variable.verilog"
         }
       ]
     },
@@ -271,10 +271,10 @@
           "begin": "\\b(Pattern)\\b\\s*(\\b[aA-zZ_0-9]*\\b)?\\s*(\\bwith\\b\\s*[^\\{]*)?\\s*({)",
           "beginCaptures": {
             "1": {
-              "name": "keyword.other.pdll"
+              "name": "keyword.other.verilog"
             },
             "2": {
-              "name": "entity.name.function.pdll"
+              "name": "entity.name.function.verilog"
             },
             "3": {
               "patterns": [
@@ -295,10 +295,10 @@
           "begin": "\\b(Pattern)\\b\\s*(\\b[aA-zZ_0-9]*\\b)?\\s*(\\bwith\\b\\s*[^\\=]*)?\\s*(=>)",
           "beginCaptures": {
             "1": {
-              "name": "keyword.other.pdll"
+              "name": "keyword.other.verilog"
             },
             "2": {
-              "name": "entity.name.function.pdll"
+              "name": "entity.name.function.verilog"
             },
             "3": {
               "patterns": [
@@ -323,7 +323,7 @@
           "match": "\\b(erase|let|replace|return|rewrite|with)\\b",
           "captures": {
             "1": {
-              "name": "keyword.control.pdll"
+              "name": "keyword.control.verilog"
             }
           }
         },
@@ -338,10 +338,10 @@
           "match": "\\b(Op)<([a-zA-Z0-9_\\.$-]*)>",
           "captures": {
             "1": {
-              "name": "entity.name.type.pdll"
+              "name": "entity.name.type.verilog"
             },
             "2": {
-              "name": "variable.other.enummember.pdll"
+              "name": "variable.other.enummember.verilog"
             }
           }
         },
@@ -356,7 +356,7 @@
         },
         {
           "match": "[a-zA-Z_0-9]+",
-          "name": "entity.name.type.pdll"
+          "name": "entity.name.type.verilog"
         }
       ]
     },
@@ -366,7 +366,7 @@
           "begin": "\\b([aA-zZ_0-9]*)\\b\\s*:\\s*\\[",
           "beginCaptures": {
             "1": {
-              "name": "entity.name.variable.pdll"
+              "name": "entity.name.variable.verilog"
             }
           },
           "patterns": [
@@ -380,7 +380,7 @@
           "match": "\\b([aA-zZ_0-9]*)\\b\\s*:\\s*([aA-zZ_0-9]+(\\<([^\\>]+)\\>)?)",
           "captures": {
             "1": {
-              "name": "entity.name.variable.pdll"
+              "name": "entity.name.variable.verilog"
             },
             "2": {
               "patterns": [
@@ -454,7 +454,7 @@
           "begin": "(attr)<",
           "beginCaptures": {
             "1": {
-              "name": "keyword.other.pdll"
+              "name": "keyword.other.verilog"
             }
           },
           "patterns": [
@@ -473,7 +473,7 @@
       "begin": "\\b([a-zA-Z0-9_]+)\\(",
       "beginCaptures": {
         "1": {
-          "name": "entity.name.variable.pdll"
+          "name": "entity.name.variable.verilog"
         }
       },
       "patterns": [
@@ -485,16 +485,16 @@
     },
     "identifier_expr": {
       "match": "\\b([a-zA-Z0-9_]+)\\b",
-      "name": "entity.name.variable.pdll"
+      "name": "entity.name.variable.verilog"
     },
     "op_expr": {
       "match": "\\b(op)<([0-9a-zA-Z_\\.]*)>",
       "captures": {
         "1": {
-          "name": "keyword.other.pdll"
+          "name": "keyword.other.verilog"
         },
         "2": {
-          "name": "variable.other.enummember.pdll"
+          "name": "variable.other.enummember.verilog"
         }
       }
     },
@@ -504,7 +504,7 @@
           "begin": "\\b(type)<",
           "beginCaptures": {
             "1": {
-              "name": "keyword.other.pdll"
+              "name": "keyword.other.verilog"
             }
           },
           "patterns": [
@@ -520,5 +520,5 @@
       ]
     }
   },
-  "scopeName": "source.pdll"
+  "scopeName": "source.verilog"
 }
