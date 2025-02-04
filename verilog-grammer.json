@@ -1,521 +1,131 @@
 {
   "name": "Verilog",
   "fileTypes": [
-    "verilog"
+    "v",
+    "vh",
+    "sv",
+    "svh"
   ],
   "patterns": [
     {
-      "include": "#comment"
+      "include": "#comments"
     },
     {
-      "include": "#string"
+      "include": "#keywords"
     },
     {
-      "include": "#string_block"
+      "include": "#strings"
     },
     {
-      "include": "#integer"
+      "include": "#numbers"
     },
     {
-      "include": "#include"
+      "include": "#operators"
     },
     {
-      "include": "#user_constraint"
+      "include": "#compiler-directives"
     },
     {
-      "include": "#user_rewrite"
+      "include": "#module-items"
     },
     {
-      "include": "#pattern"
-    },
-    {
-      "include": "#inside_pattern"
+      "include": "#variable-items"
     }
   ],
   "repository": {
-    "comment": {
-      "match": "\/\/.*$",
-      "name": "comment.line.double-slash.verilog"
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.verilog",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.verilog",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
     },
-    "string": {
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.verilog",
+          "match": "\\b(begin|end|if|else|case|endcase|default|for|while|forever|repeat|fork|join|initial|always|always_comb|always_ff|always_latch|posedge|negedge)\\b"
+        },
+        {
+          "name": "keyword.other.verilog",
+          "match": "\\b(module|endmodule|input|output|inout|wire|reg|logic|integer|parameter|localparam|assign|function|endfunction|task|endtask)\\b"
+        }
+      ]
+    },
+    "strings": {
       "name": "string.quoted.double.verilog",
       "begin": "\"",
       "end": "\"",
-      "beginCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.begin.verilog"
-        }
-      },
       "patterns": [
         {
-          "match": "\\\\[nt\"]",
-          "name": "constant.character.escape.verilog"
-        },
-        {
-          "match": "\\\\.",
-          "name": "invalid.illegal.verilog"
-        }
-      ],
-      "endCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.end.verilog"
-        }
-      }
-    },
-    "string_block": {
-      "name": "string.quoted.triple.verilog",
-      "begin": "\\[{",
-      "end": "}]",
-      "beginCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.begin.verilog"
-        }
-      },
-      "patterns": [
-        {
-          "match": "\\\\[nt\"]",
-          "name": "constant.character.escape.verilog"
-        },
-        {
-          "match": "\\\\.",
-          "name": "invalid.illegal.verilog"
-        }
-      ],
-      "endCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.end.verilog"
-        }
-      }
-    },
-    "integer": {
-      "match": "[0-9]+",
-      "name": "constant.numeric.verilog"
-    },
-    "include": {
-      "patterns": [
-        {
-          "match": "(#include)",
-          "name": "keyword.control.verilog"
+          "name": "constant.character.escape.verilog",
+          "match": "\\\\[nt\\\\\"]"
         }
       ]
     },
-    "argument_or_result_list": {
+    "numbers": {
       "patterns": [
         {
-          "match": "\\b([aA-zZ_0-9]*)\\b\\s*:\\s*([aA-zZ_0-9]+)\\b(\\<([^\\>]+)\\>)?",
-          "captures": {
-            "1": {
-              "name": "variable.parameter.verilog"
-            },
-            "2": {
-              "name": "entity.name.type.verilog"
-            },
-            "4": {
-              "name": "variable.other.enummember.verilog"
-            }
-          }
+          "name": "constant.numeric.decimal.verilog",
+          "match": "\\b\\d+'?[dD]?[0-9_]+\\b"
         },
         {
-          "match": "(\\(|\\>|,)\\s*([aA-zZ_0-9]+)\\b(\\<([^\\>]+)\\>)?\\s*(?=[^:])",
-          "captures": {
-            "2": {
-              "name": "entity.name.type.verilog"
-            },
-            "4": {
-              "name": "variable.other.enummember.verilog"
-            }
-          }
+          "name": "constant.numeric.hex.verilog", 
+          "match": "\\b\\d+'[hH][0-9a-fA-F_]+\\b"
+        },
+        {
+          "name": "constant.numeric.binary.verilog",
+          "match": "\\b\\d+'[bB][01_]+\\b"
+        },
+        {
+          "name": "constant.numeric.octal.verilog",
+          "match": "\\b\\d+'[oO][0-7_]+\\b"
         }
       ]
     },
-    "user_constraint": {
+    "operators": {
       "patterns": [
         {
-          "begin": "\\b(Constraint)\\b\\s*(\\b[aA-zZ_0-9]*\\b)?",
-          "beginCaptures": {
-            "1": {
-              "name": "keyword.other.verilog"
-            },
-            "2": {
-              "name": "entity.name.type.verilog"
-            }
-          },
-          "patterns": [
-            {
-              "begin": "(\\[{)",
-              "patterns": [
-                {
-                  "include": "source.cpp"
-                }
-              ],
-              "end": "(}])"
-            },
-            {
-              "begin": "(?=\\()",
-              "patterns": [
-                {
-                  "include": "#argument_or_result_list"
-                }
-              ],
-              "end": "\\)"
-            },
-            {
-              "include": "#argument_or_result_list"
-            },
-            {
-              "begin": "{",
-              "patterns": [
-                {
-                  "include": "#inside_pattern"
-                }
-              ],
-              "end": "(?=})"
-            },
-            {
-              "begin": "=>",
-              "patterns": [
-                {
-                  "include": "#inside_pattern"
-                }
-              ],
-              "end": "(?=;|,|\\))"
-            }
-          ],
-          "end": "(}|;|,)|(?=\\))"
+          "name": "keyword.operator.verilog",
+          "match": "<=[&|~><+\\-*/%^!=?:]+|\\b(and|or|not|xor|xnor|nand|nor)\\b"
         }
       ]
     },
-    "user_rewrite": {
+    "compiler-directives": {
       "patterns": [
         {
-          "begin": "\\b(Rewrite)\\b\\s*(\\b[aA-zZ_0-9]*\\b)?",
-          "beginCaptures": {
-            "1": {
-              "name": "keyword.other.verilog"
-            },
-            "2": {
-              "name": "entity.name.function.verilog"
-            }
-          },
-          "patterns": [
-            {
-              "begin": "(\\[{)",
-              "patterns": [
-                {
-                  "include": "source.cpp"
-                }
-              ],
-              "end": "(}])"
-            },
-            {
-              "begin": "(?=\\()",
-              "patterns": [
-                {
-                  "include": "#argument_or_result_list"
-                }
-              ],
-              "end": "\\)"
-            },
-            {
-              "include": "#argument_or_result_list"
-            },
-            {
-              "begin": "{",
-              "patterns": [
-                {
-                  "include": "#inside_pattern"
-                }
-              ],
-              "end": "(?=})"
-            },
-            {
-              "begin": "=>",
-              "patterns": [
-                {
-                  "include": "#inside_pattern"
-                }
-              ],
-              "end": "(?=;|,|\\))"
-            }
-          ],
-          "end": "(}|;|,)|(?=\\))"
+          "name": "keyword.control.directive.verilog",
+          "match": "`\\b(include|define|undef|ifdef|ifndef|else|endif|timescale)\\b"
         }
       ]
     },
-    "pattern_metadata": {
+    "module-items": {
       "patterns": [
         {
-          "match": "\\b(with)\\b",
-          "name": "keyword.other.verilog"
+          "name": "entity.name.type.module.verilog",
+          "match": "\\b(module|endmodule)\\s+(\\w+)"
         },
         {
-          "match": "\\b(benefit)\\b\\(([0-9]+)\\)",
-          "captures": {
-            "1": {
-              "name": "entity.name.variable.verilog"
-            },
-            "2": {
-              "name": "constant.numeric.verilog"
-            }
-          }
+          "name": "entity.name.function.verilog", 
+          "match": "\\b(function|task)\\s+(\\w+)"
         },
         {
-          "match": "\\b(recursion)\\b",
-          "name": "entity.name.variable.verilog"
+          "name": "variable.other.verilog",
+          "match": "\\b(input|output|inout|wire|reg|logic)\\s+(\\w+)"
         }
       ]
     },
-    "pattern": {
+    "variable-items": {
       "patterns": [
         {
-          "begin": "\\b(Pattern)\\b\\s*(\\b[aA-zZ_0-9]*\\b)?\\s*(\\bwith\\b\\s*[^\\{]*)?\\s*({)",
-          "beginCaptures": {
-            "1": {
-              "name": "keyword.other.verilog"
-            },
-            "2": {
-              "name": "entity.name.function.verilog"
-            },
-            "3": {
-              "patterns": [
-                {
-                  "include": "#pattern_metadata"
-                }
-              ]
-            }
-          },
-          "patterns": [
-            {
-              "include": "#inside_pattern"
-            }
-          ],
-          "end": "(})"
-        },
-        {
-          "begin": "\\b(Pattern)\\b\\s*(\\b[aA-zZ_0-9]*\\b)?\\s*(\\bwith\\b\\s*[^\\=]*)?\\s*(=>)",
-          "beginCaptures": {
-            "1": {
-              "name": "keyword.other.verilog"
-            },
-            "2": {
-              "name": "entity.name.function.verilog"
-            },
-            "3": {
-              "patterns": [
-                {
-                  "include": "#pattern_metadata"
-                }
-              ]
-            }
-          },
-          "patterns": [
-            {
-              "include": "#inside_pattern"
-            }
-          ],
-          "end": ";"
-        }
-      ]
-    },
-    "inside_pattern": {
-      "patterns": [
-        {
-          "match": "\\b(erase|let|replace|return|rewrite|with)\\b",
-          "captures": {
-            "1": {
-              "name": "keyword.control.verilog"
-            }
-          }
-        },
-        {
-          "include": "#expressions"
-        }
-      ]
-    },
-    "variable_constraint": {
-      "patterns": [
-        {
-          "match": "\\b(Op)<([a-zA-Z0-9_\\.$-]*)>",
-          "captures": {
-            "1": {
-              "name": "entity.name.type.verilog"
-            },
-            "2": {
-              "name": "variable.other.enummember.verilog"
-            }
-          }
-        },
-        {
-          "begin": "<",
-          "patterns": [
-            {
-              "include": "#expressions"
-            }
-          ],
-          "end": ">"
-        },
-        {
-          "match": "[a-zA-Z_0-9]+",
-          "name": "entity.name.type.verilog"
-        }
-      ]
-    },
-    "variable_definition": {
-      "patterns": [
-        {
-          "begin": "\\b([aA-zZ_0-9]*)\\b\\s*:\\s*\\[",
-          "beginCaptures": {
-            "1": {
-              "name": "entity.name.variable.verilog"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#variable_constraint"
-            }
-          ],
-          "end": "\\]"
-        },
-        {
-          "match": "\\b([aA-zZ_0-9]*)\\b\\s*:\\s*([aA-zZ_0-9]+(\\<([^\\>]+)\\>)?)",
-          "captures": {
-            "1": {
-              "name": "entity.name.variable.verilog"
-            },
-            "2": {
-              "patterns": [
-                {
-                  "include": "#variable_constraint"
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    "expressions": {
-      "patterns": [
-        {
-          "include": "#user_constraint"
-        },
-        {
-          "include": "#user_rewrite"
-        },
-        {
-          "include": "#attr_expr"
-        },
-        {
-          "include": "#op_expr"
-        },
-        {
-          "include": "#type_expr"
-        },
-        {
-          "include": "#call_expr"
-        },
-        {
-          "include": "#variable_definition"
-        },
-        {
-          "include": "#identifier_expr"
-        },
-        {
-          "include": "#string"
-        },
-        {
-          "include": "#string_block"
-        },
-        {
-          "include": "#comment"
-        },
-        {
-          "begin": "{",
-          "patterns": [
-            {
-              "include": "#inside_pattern"
-            }
-          ],
-          "end": "}"
-        },
-        {
-          "begin": "\\(",
-          "patterns": [
-            {
-              "include": "#expressions"
-            }
-          ],
-          "end": "\\)"
-        }
-      ]
-    },
-    "attr_expr": {
-      "patterns": [
-        {
-          "begin": "(attr)<",
-          "beginCaptures": {
-            "1": {
-              "name": "keyword.other.verilog"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#string"
-            },
-            {
-              "include": "#string_block"
-            }
-          ],
-          "end": ">"
-        }
-      ]
-    },
-    "call_expr": {
-      "begin": "\\b([a-zA-Z0-9_]+)\\(",
-      "beginCaptures": {
-        "1": {
-          "name": "entity.name.variable.verilog"
-        }
-      },
-      "patterns": [
-        {
-          "include": "#expressions"
-        }
-      ],
-      "end": "\\)"
-    },
-    "identifier_expr": {
-      "match": "\\b([a-zA-Z0-9_]+)\\b",
-      "name": "entity.name.variable.verilog"
-    },
-    "op_expr": {
-      "match": "\\b(op)<([0-9a-zA-Z_\\.]*)>",
-      "captures": {
-        "1": {
-          "name": "keyword.other.verilog"
-        },
-        "2": {
-          "name": "variable.other.enummember.verilog"
-        }
-      }
-    },
-    "type_expr": {
-      "patterns": [
-        {
-          "begin": "\\b(type)<",
-          "beginCaptures": {
-            "1": {
-              "name": "keyword.other.verilog"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#string"
-            },
-            {
-              "include": "#string_block"
-            }
-          ],
-          "end": ">"
+          "name": "variable.other.verilog",
+          "match": "\\b(input|output|inout|wire|reg|logic)\\s+(\\w+)"
         }
       ]
     }

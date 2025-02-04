@@ -201,6 +201,10 @@
       {
         "command": "mlir.viewVerilogOutput",
         "title": "mlir-verilog: View Verilog output"
+      }, 
+      {
+        "command": "mlir.loadMLIR",
+        "title": "mlir-verilog: Load MLIR"
       }
     ],
     "menus": {
