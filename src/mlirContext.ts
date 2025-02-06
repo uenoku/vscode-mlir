@@ -191,7 +191,9 @@ export class MLIRContext implements vscode.Disposable {
     );
 
     configsToWatch.push(`${languageName}_include_directories`);
-    pathsToWatch.push(...result_include_dirs);
+
+    // TODO: Don't watch the include directories for now.
+    // pathsToWatch.push(...result_include_dirs);
 
     let sourceLocationRootDirectories = config.get<string[]>(
       `${languageName}_source_location_root_directories`,
@@ -232,7 +234,8 @@ export class MLIRContext implements vscode.Disposable {
     );
 
     configsToWatch.push(`${languageName}_source_location_root_directories`);
-    pathsToWatch.push(...result_source_location_root_directories);
+    // TODO: Don't watch the source location root directories for now.
+    // pathsToWatch.push(...result_source_location_root_directories);
 
     // Mlir
     let mlirPath = config.get<string>(
