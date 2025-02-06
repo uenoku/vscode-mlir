@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { Command } from "../../command";
 import { MLIRContext } from "../../mlirContext";
 import { assert } from "console";
+import { endianness } from "os";
 
 /**
  * The parameters to the verilog/viewOutput command. These parameters are:
@@ -27,25 +28,29 @@ export class GoToObjectDefinitionCommand extends Command {
   }
 
   async execute(args: any) {
-    const editor = vscode.window.activeTextEditor;
+    let verilogClient;
+    for (const editor of vscode.window.visibleTextEditors) {
+      if (editor.document.languageId != "verilog") {
+        continue;
+      }
 
-    let verilogClient =
-      await this.context.getOrActivateLanguageClientForWorkspaceFolder(
-        vscode.workspace.getWorkspaceFolder(editor.document.uri),
-        "verilog",
-        await this.context.getServerSettingName("verilog")
+      verilogClient = this.context.getLanguageClient(
+        editor.document.uri,
+        "verilog"
       );
+      if (!verilogClient) {
+        continue;
+      }
 
-    if (!verilogClient) {
-      return;
+      break;
     }
 
-    // if (editor.document.languageId != 'verilog')
-    //   return;
-
-    // Check to see if a language client is active for this document.
-    // const verilogClient =
-    //     this.context.getLanguageClient(editor.document.uri, "verilog");
+    if (!verilogClient) {
+      vscode.window.showWarningMessage(
+        "No verilog language client found. Please open a (random) verilog file along with waveform first if you want to use circt-verilog-lsp integration."
+      );
+      return;
+    }
 
     // Validate the first argument
     if (!args.path) {
@@ -66,45 +71,42 @@ export class GoToObjectDefinitionCommand extends Command {
     if (result.length == 0) {
       return;
     }
-      // Open the file.
-      if (result.length > 1) {
+    // Open the file.
+    if (result.length > 1) {
       vscode.window.showWarningMessage(
         "Multiple locations found for object definition. Opening first location."
       );
     }
 
-      let documentUri = result[0].uri;
-      if (typeof documentUri === "string") {
-        documentUri = vscode.Uri.parse(documentUri);
-      }
+    let documentUri = result[0].uri;
+    if (typeof documentUri === "string") {
+      documentUri = vscode.Uri.parse(documentUri);
+    }
 
-      try {
-        // Check if the document is already open in the workspace.
-        for (const editor of vscode.window.visibleTextEditors) {
-          if (editor.document.uri.fsPath === documentUri.fsPath) {
-            // Change the cursor to the location.
-            editor.selection = new vscode.Selection(
-              result[0].range.start,
-              result[0].range.end
-            );
-            editor.revealRange(
-              new vscode.Range(result[0].range.start, result[0].range.end),
-              vscode.TextEditorRevealType.InCenter
-            );
-            return;
-          }
-        }
-        await vscode.window.showTextDocument(documentUri, {
-          selection: new vscode.Range(
+    try {
+      // Check if the document is already open in the workspace.
+      for (const editor of vscode.window.visibleTextEditors) {
+        if (editor.document.uri.fsPath === documentUri.fsPath) {
+          // Change the cursor to the location.
+          editor.selection = new vscode.Selection(
             result[0].range.start,
             result[0].range.end
-          ),
-          viewColumn: vscode.ViewColumn.Beside,
-        });
-      } catch (error) {
-        console.error("Failed to open document:", error);
-        vscode.window.showErrorMessage(`Failed to open file: ${error.message}`);
+          );
+          editor.revealRange(
+            new vscode.Range(result[0].range.start, result[0].range.end),
+            vscode.TextEditorRevealType.InCenter
+          );
+          return;
+        }
       }
+      await vscode.window.showTextDocument(documentUri, {
+        selection: new vscode.Range(result[0].range.start, result[0].range.end),
+        viewColumn: vscode.ViewColumn.Beside,
+      });
+    } catch (error) {
+      console.error("Failed to open document:", error);
+      vscode.window.showErrorMessage(`Failed to open file: ${error.message}`);
+    }
 
     return;
   }

@@ -41,14 +41,12 @@ export class SendObjectPathHintsCommand extends Command {
 
       break;
     }
-    if (!verilogClient) {
-      console.error('No verilog client found');
+     if (!verilogClient) {
+      vscode.window.showWarningMessage(
+        "No verilog language client found. Please open a (random) verilog file along with waveform first if you want to use circt-verilog-lsp integration."
+      );
       return;
     }
-    console.error('Found verilog client');
-
-    // if (editor.document.languageId != 'verilog')
-    //   return;
 
     // Check to see if a language client is active for this document.
     // const verilogClient =
@@ -65,7 +63,6 @@ export class SendObjectPathHintsCommand extends Command {
     // }
 
     // Validate the first argument
-    console.error('args', args);
     if (!args.values) {
       console.error('Invalid arguments provided to sendObjectPathHints');
       return;
