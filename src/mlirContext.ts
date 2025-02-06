@@ -66,7 +66,6 @@ export class MLIRContext implements vscode.Disposable {
     languageId: string,
     serverSettingName: string
   ): Promise<vscodelc.LanguageClient> {
-
     let workspaceFolderStr = workspaceFolder
       ? workspaceFolder.uri.toString()
       : "";
@@ -89,7 +88,6 @@ export class MLIRContext implements vscode.Disposable {
       folderContext.clients.set(languageId, client);
     }
     return client;
-
   }
 
   async getServerSettingName(languageId: string): Promise<string> {
@@ -184,7 +182,11 @@ export class MLIRContext implements vscode.Disposable {
         if (exist_verilog) verilogIncludeDirs.push(parent);
       }
       // Resolve relative path to the workspace folder.
-      let design_root_path = await this.resolveDirectory(design_root, "", workspaceFolder);
+      let design_root_path = await this.resolveDirectory(
+        design_root,
+        "",
+        workspaceFolder
+      );
       await findIncludeDirs(design_root_path);
     }
 
@@ -210,8 +212,6 @@ export class MLIRContext implements vscode.Disposable {
         (includeDir) => `--${languageName}-include-dir=${includeDir}`
       )
     );
-
-
 
     // TODO: Don't watch the include directories for now.
     // pathsToWatch.push(...result_include_dirs);
@@ -284,7 +284,6 @@ export class MLIRContext implements vscode.Disposable {
     }
 
     pathsToWatch.push(mlirPath);
-
   }
 
   /**
@@ -491,6 +490,10 @@ export class MLIRContext implements vscode.Disposable {
         "${workspaceFolder}",
         workspaceFolder.uri.fsPath
       );
+      // If the path is already fully resolved, there is nothing to do.
+      if (path.isAbsolute(directoryPath)) {
+        return directoryPath;
+      }
       // Return relative path to the workspace folder.
       return path.relative(workspaceFolder.uri.fsPath, directoryPath);
     }
