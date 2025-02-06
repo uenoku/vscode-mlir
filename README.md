@@ -5,6 +5,7 @@ CIRCT-Verilog-LSP is built on top of the [Slang](https://github.com/MikePopolosk
 
 ## `.verilog` - (System) Verilog:
 
+
 ### Features
 
 - Syntax highlighting for `.v` and `.sv` files and markdown blocks
@@ -13,294 +14,46 @@ CIRCT-Verilog-LSP is built on top of the [Slang](https://github.com/MikePopolosk
 - User providable inlay hints
 - Detailed information when hovering over variables
 - ImportVerilog integration
-- Waveform viewer (surfer) integration
+- *[Requires MLIR file]* Waveform viewer (surfer) integration
+
+### Configuration
+
+* For the basic features, only the `circt-verilog-lsp.verilog_server_path` setting is required. Set this to the path of the `circt-verilog-lsp` executable.
+
+* To cross reference CIRCT emitted locations, the `circt-verilog-lsp.verilog_source_location_root_directories` setting is required. For example, chisel user could set this to the path of the directory containing the chisel sources.
+
+
+* For the waveform viewer integration, MLIR file and include directories settings are required. Easiest way to configure these is to set `circt-verilog-lsp.verilog_design_root_directory` to the root directory which contains a `mlir` file and verilog files. The option recursively includes a `mlir` file and verilog files in the directory. It causes an error if there are multiple `mlir` files in the directory so configure `circt-verilog-lsp.verilog_mlir_file` in that case.
+
+* The language server automatically includes files in the same directory as the file being edited. To manually include additional RTL directories, use the `circt-verilog-lsp.verilog_include_directories` setting.
+
+* MLIR file can be passed to the language server via the `circt-verilog-lsp.verilog_mlir_file` setting.
 
 #### Diagnostics
 
 The language server runs diagnostics ran by slang.
 
-![IMG](./diag.png)
-
 ##### Find definition
 
-Jump to the definition of the IR entity under the cursor. A few examples are
-shown below:
+Jump to the definition of symbol under the cursor. For variables it jumps to the declaration. For module instantiation, it jumps to the module definition.
 
-- SSA Values
+#### Cross-references to CIRCT emitted locations
 
-![SSA](https://mlir.llvm.org/mlir-lsp-server/goto_def_ssa.gif)
-
-
-- Symbol References
-
-![Symbols](https://mlir.llvm.org/mlir-lsp-server/goto_def_symbol.gif)
-
-The definition of an operation will also take into account the source location
-attached, allowing for navigating into the source file that generated the
-operation.
-
-![External Locations](https://mlir.llvm.org/mlir-lsp-server/goto_def_external.gif)
-
-##### Automatically insert `expected-` diagnostic checks
-
-MLIR provides
-[infrastructure](https://mlir.llvm.org/docs/Diagnostics/#sourcemgr-diagnostic-verifier-handler)
-for checking expected diagnostics, which is heavily utilized when defining IR
-parsing and verification. The language server provides code actions for
-automatically inserting the checks for diagnostics it knows about.
-
-![IMG](https://mlir.llvm.org/mlir-lsp-server/diagnostics_action.gif)
-
-## Advanced Features -- Waveform viewer
-
-#### Cross-references
-
-Cross references allow for navigating the use/def chains of SSA values (i.e.
-operation results and block arguments), [Symbols](../SymbolsAndSymbolTables.md),
-and Blocks.
-
-
-##### Find references
-
-Show all references of the IR entity under the cursor.
-
-![IMG](https://mlir.llvm.org/mlir-lsp-server/find_references.gif)
+CIRCT emits location information `@[loc]` in the SV. CIRCT-Verilog-LSP can navigate to these locations. It's necessary to configure the `circt-verilog-lsp.verilog_source_location_root_directories` setting to the root directory of the design.
 
 #### Hover
 
-Hover over an IR entity to see more information about it. The exact information
-displayed is dependent on the type of IR entity under the cursor. For example,
-hovering over an `Operation` may show its generic format.
+Hover over an verilog files see more information about it.  For symbols, type information and definition location is shown. For source locations, original file content is shown.
 
-![IMG](https://mlir.llvm.org/mlir-lsp-server/hover.png)
+#### ImportVerilog Integration
 
-#### Navigation
+The language server is shipped with ImportVerilog pipeline.
+To run ImportVerilog pipelne, use `circt-verilog-lsp.viewOutput` command.
 
-The language server will also inform the editor about the structure of symbol
-tables within the IR. This allows for jumping directly to the definition of a
-symbol, such as a `func.func`, within the file.
 
-![IMG](https://mlir.llvm.org/mlir-lsp-server/navigation.gif)
+#### Waveform viewer integration
 
-#### Bytecode Editing and Inspection
+The language server has integration with (currently locally modified) Surfer.
+Surfer extension is required to be installed. In addition to that the LSP requires entire instance graph, so currenly MLIR file is required. See Configuration section for more details.
 
-The language server provides support for interacting with MLIR bytecode files,
-enabling IDEs to transparently view and edit bytecode files in the same way
-as textual `.mlir` files.
-
-![IMG](https://mlir.llvm.org/mlir-lsp-server/bytecode_edit.gif)
-
-### Setup
-
-#### `mlir-lsp-server`
-
-The various `.mlir` language features require the
-[`mlir-lsp-server` language server](https://mlir.llvm.org/docs/Tools/MLIRLSP/#mlir-lsp-language-server--mlir-lsp-server).
-If `mlir-lsp-server` is not found within your workspace path, you must specify
-the path of the server via the `mlir.server_path` setting. The path of the
-server may be absolute or relative within your workspace.
-
-## `.verilog` - MLIR Verilog pattern files:
-
-The MLIR extension adds language support for the
-[Verilog pattern language](https://mlir.llvm.org/docs/Verilog/).
-
-### Features
-
-- Syntax highlighting for `.verilog` files and `verilog` markdown blocks
-- go-to-definition and cross references
-- Types and documentation on hover
-- Code completion and signature help
-- View intermediate AST, MLIR, or C++ output
-
-#### Diagnostics
-
-The language server actively runs verification as you type, showing any
-generated diagnostics in-place.
-
-![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/diagnostics.png)
-
-#### Code completion and signature help
-
-The language server provides suggestions as you type based on what constraints,
-rewrites, dialects, operations, etc are available in this context. The server
-also provides information about the structure of constraint and rewrite calls,
-operations, and more as you fill them in.
-
-![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/code_complete.gif)
-
-#### Cross-references
-
-Cross references allow for navigating the code base.
-
-##### Find definition
-
-Jump to the definition of a symbol under the cursor:
-
-![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/goto_def.gif)
-
-If ODS information is available, we can also jump to the definition of operation
-names and more:
-
-![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/goto_def_ods.gif)
-
-##### Find references
-
-Show all references of the symbol under the cursor.
-
-![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/find_references.gif)
-
-#### Hover
-
-Hover over a symbol to see more information about it, such as its type,
-documentation, and more.
-
-![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/hover.png)
-
-If ODS information is available, we can also show information directly from the
-operation definitions:
-
-![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/hover_ods.png)
-
-#### Navigation
-
-The language server will also inform the editor about the structure of symbols
-within the IR.
-
-![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/navigation.gif)
-
-#### View intermediate output
-
-The language server provides support for introspecting various intermediate
-stages of compilation, such as the AST, the `.mlir` containing the generated
-PDL, and the generated C++ glue. This is a custom LSP extension, and is not
-necessarily provided by all IDE clients.
-
-![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/view_output.gif)
-
-#### Inlay hints
-
-The language server provides additional information inline with the source code.
-Editors usually render this using read-only virtual text snippets interspersed
-with code. Hints may be shown for:
-
-- types of local variables
-- names of operand and result groups
-- constraint and rewrite arguments
-
-![IMG](https://mlir.llvm.org/mlir-verilog-lsp-server/inlay_hints.png)
-
-### Setup
-
-#### `mlir-verilog-lsp-server`
-
-The various `.verilog` language features require the
-[`mlir-verilog-lsp-server` language server](https://mlir.llvm.org/docs/Tools/MLIRLSP/#verilog-lsp-language-server--mlir-verilog-lsp-server).
-If `mlir-verilog-lsp-server` is not found within your workspace path, you must
-specify the path of the server via the `mlir.verilog_server_path` setting. The path
-of the server may be absolute or relative within your workspace.
-
-#### Project setup
-
-To properly understand and interact with `.verilog` files, the language server must
-understand how the project is built (compile flags).
-[`verilog_compile_commands.yml` files](https://mlir.llvm.org/docs/Tools/MLIRLSP/#compilation-database)
-related to your project should be provided to ensure files are properly
-processed. These files can usually be generated by the build system, and the
-server will attempt to find them within your `build/` directory. If not
-available in or a unique location, additional `verilog_compile_commands.yml` files
-may be specified via the `mlir.verilog_compilation_databases` setting. The paths of
-these databases may be absolute or relative within your workspace.
-
-## `.td` - TableGen files:
-
-The MLIR extension adds language support for the
-[TableGen language](https://llvm.org/docs/TableGen/ProgRef.html).
-
-### Features
-
-- Syntax highlighting for `.td` files and `tablegen` markdown blocks
-- go-to-definition and cross references
-- Types and documentation on hover
-
-#### Diagnostics
-
-The language server actively runs verification as you type, showing any
-generated diagnostics in-place.
-
-![IMG](https://mlir.llvm.org/tblgen-lsp-server/diagnostics.png)
-
-#### Cross-references
-
-Cross references allow for navigating the code base.
-
-##### Find definition
-
-Jump to the definition of a symbol under the cursor:
-
-![IMG](https://mlir.llvm.org/tblgen-lsp-server/goto_def.gif)
-
-##### Find references
-
-Show all references of the symbol under the cursor.
-
-![IMG](https://mlir.llvm.org/tblgen-lsp-server/find_references.gif)
-
-#### Hover
-
-Hover over a symbol to see more information about it, such as its type,
-documentation, and more.
-
-![IMG](https://mlir.llvm.org/tblgen-lsp-server/hover_def.png)
-
-Hovering over an overridden field will also show you information such as
-documentation from the base value:
-
-![IMG](https://mlir.llvm.org/tblgen-lsp-server/hover_field.png)
-
-### Setup
-
-#### `tblgen-lsp-server`
-
-The various `.td` language features require the
-[`tblgen-lsp-server` language server](https://mlir.llvm.org/docs/Tools/MLIRLSP/#tablegen-lsp-language-server--tblgen-lsp-server).
-If `tblgen-lsp-server` is not found within your workspace path, you must specify
-the path of the server via the `mlir.tablegen_server_path` setting. The path of
-the server may be absolute or relative within your workspace.
-
-#### Project setup
-
-To properly understand and interact with `.td` files, the language server must
-understand how the project is built (compile flags).
-[`tablegen_compile_commands.yml` files](https://mlir.llvm.org/docs/Tools/MLIRLSP/#compilation-database-1)
-related to your project should be provided to ensure files are properly
-processed. These files can usually be generated by the build system, and the
-server will attempt to find them within your `build/` directory. If not
-available in or a unique location, additional `tablegen_compile_commands.yml`
-files may be specified via the `mlir.tablegen_compilation_databases` setting.
-The paths of these databases may be absolute or relative within your workspace.
-
-## Contributing
-
-This extension is actively developed within the
-[LLVM monorepo](https://github.com/llvm/llvm-project), at
-[`mlir/utils/vscode`](https://github.com/llvm/llvm-project/tree/main/mlir/utils/vscode).
-As such, contributions should follow the
-[normal LLVM guidelines](https://llvm.org/docs/Contributing.html), with code
-reviews sent to
-[GitHub](https://llvm.org/docs/Contributing.html#how-to-submit-a-patch).
-
-When developing or deploying this extension within the LLVM monorepo, a few
-extra setup steps are required:
-
-- Copy `mlir/utils/textmate/mlir.json` to the extension directory and rename to
-  `grammar.json`.
-- Copy `llvm/utils/textmate/tablegen.json` to the extension directory and rename
-  to `tablegen-grammar.json`.
-- Copy
-  `https://mlir.llvm.org//LogoAssets/logo/PNG/full_color/mlir-identity-03.png`
-  to the extension directory and rename to `icon.png`.
-
-Please follow the existing code style when contributing to the extension, we
-recommend to run `npm run format` before sending a patch.
-
+After that, selecting variable in surfer will open corresponding verilog file with the variable highlighted.
