@@ -35,10 +35,15 @@ export class ViewVerilogCommand extends Command {
     }
 
     // Ask the user for the desired output type.
-    const outputType =
+    let outputType =
         await vscode.window.showQuickPick([ 'ast', 'moore', 'core' ]);
     if (!outputType) {
       return;
+    }
+    if (outputType == 'moore') {
+      outputType = 'mlir';
+    } else if (outputType == 'core') {
+      outputType = 'cpp';
     }
 
     // If we have the language client, ask it to try compiling the document.
@@ -57,7 +62,7 @@ export class ViewVerilogCommand extends Command {
     if (outputType == 'moore') {
       outputFileType = 'mlir';
     } else if (outputType == 'core') {
-      outputFileType = 'cpp';
+      outputFileType = 'mlir';
     }
     await vscode.workspace.openTextDocument(
         {language : outputFileType, content : result.output});

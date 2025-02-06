@@ -12,6 +12,6 @@ export function registerVerilogExtensions(context: vscode.ExtensionContext,
                                        mlirContext: MLIRContext) {
   context.subscriptions.push(new ViewVerilogCommand(mlirContext));
   context.subscriptions.push(new SendObjectPathHintsCommand(mlirContext));
-  context.subscriptions.push(new LoadMLIRCommand(mlirContext));
+  // context.subscriptions.push(new LoadMLIRCommand(mlirContext));
   context.subscriptions.push(new GoToObjectDefinitionCommand(mlirContext));
 }
