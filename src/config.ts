@@ -6,7 +6,9 @@ import * as vscode from 'vscode';
 export function get<T>(key: string,
                        workspaceFolder: vscode.WorkspaceFolder = null,
                        defaultValue: T = undefined): T {
-  return vscode.workspace.getConfiguration('mlir', workspaceFolder)
+  console.error('Getting config:', key);
+
+  return vscode.workspace.getConfiguration('circt-verilog-lsp', workspaceFolder)
       .get<T>(key, defaultValue);
 }
 
@@ -15,5 +17,5 @@ export function get<T>(key: string,
  */
 export function update<T>(key: string, value: T,
                           target?: vscode.ConfigurationTarget) {
-  return vscode.workspace.getConfiguration('mlir').update(key, value, target);
+  return vscode.workspace.getConfiguration('circt-verilog-lsp').update(key, value, target);
 }

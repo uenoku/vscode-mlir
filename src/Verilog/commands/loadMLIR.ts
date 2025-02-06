@@ -8,7 +8,7 @@ import { assert } from 'console';
  * A command that displays the output of the current Verilog document.
  */
 export class LoadMLIRCommand extends Command {
-  constructor(context: MLIRContext) { super('mlir.loadMLIR', context); }
+  constructor(context: MLIRContext) { super('circt-verilog-lsp.loadMLIR', context); }
 
   async execute(args: any) {
     const editor = vscode.window.activeTextEditor;

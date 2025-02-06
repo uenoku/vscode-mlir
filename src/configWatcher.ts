@@ -10,7 +10,7 @@ import {MLIRContext} from './mlirContext';
 async function promptRestart(settingName: string, promptMessage: string) {
   switch (config.get<string>(settingName)) {
   case 'restart':
-    vscode.commands.executeCommand('mlir.restart');
+    vscode.commands.executeCommand('circt-verilog-lsp.restart');
     break;
   case 'ignore':
     break;
@@ -19,10 +19,10 @@ async function promptRestart(settingName: string, promptMessage: string) {
     switch (await vscode.window.showInformationMessage(
         promptMessage, 'Yes', 'Yes, always', 'No, never')) {
     case 'Yes':
-      vscode.commands.executeCommand('mlir.restart');
+      vscode.commands.executeCommand('circt-verilog-lsp.restart');
       break;
     case 'Yes, always':
-      vscode.commands.executeCommand('mlir.restart');
+      vscode.commands.executeCommand('circt-verilog-lsp.restart');
       config.update<string>(settingName, 'restart',
                             vscode.ConfigurationTarget.Global);
       break;
@@ -48,7 +48,7 @@ export async function activate(
   // server.
   mlirContext.subscriptions.push(vscode.workspace.onDidChangeConfiguration(event => {
     for (const serverSetting of serverSettings) {
-      const expandedSetting = `mlir.${serverSetting}`;
+      const expandedSetting = `circt-verilog-lsp.${serverSetting}`;
       if (event.affectsConfiguration(expandedSetting, workspaceFolder)) {
         promptRestart(
             'onSettingsChanged',

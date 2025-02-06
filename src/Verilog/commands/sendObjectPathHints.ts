@@ -23,7 +23,7 @@ type SendObjectPathHintsResult = Partial<{}>;
  * A command that displays the output of the current Verilog document.
  */
 export class SendObjectPathHintsCommand extends Command {
-  constructor(context: MLIRContext) { super('mlir.objectPathInlayHints', context); }
+  constructor(context: MLIRContext) { super('circt-verilog-lsp.objectPathInlayHints', context); }
 
   async execute(args: any) {
     const editor = vscode.window.activeTextEditor;

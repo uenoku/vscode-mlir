@@ -20,7 +20,7 @@ type ViewOutputResult = Partial<{output : string}>;
  * A command that displays the output of the current Verilog document.
  */
 export class ViewVerilogCommand extends Command {
-  constructor(context: MLIRContext) { super('mlir.viewVerilogOutput', context); }
+  constructor(context: MLIRContext) { super('circt-verilog-lsp.viewVerilogOutput', context); }
 
   async execute() {
     const editor = vscode.window.activeTextEditor;

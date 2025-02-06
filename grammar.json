@@ -1,398 +1,134 @@
 {
-  "name": "MLIR",
+  "name": "Verilog",
   "fileTypes": [
-    "mlir"
+    "v",
+    "vh",
+    "sv",
+    "svh"
   ],
   "patterns": [
     {
-      "include": "#comment"
+      "include": "#comments"
     },
     {
-      "include": "#string"
+      "include": "#keywords"
     },
     {
-      "include": "#top_level_entity"
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#compiler-directives"
+    },
+    {
+      "include": "#module-items"
+    },
+    {
+      "include": "#variable-items"
     }
   ],
   "repository": {
-    "comment": {
-      "match": "\/\/.*$",
-      "name": "comment.line.double-slash.mlir"
-    },
-    "number": {
+    "comments": {
       "patterns": [
         {
-          "match": "(\\W)?([0-9]+\\.[0-9]*)([eE][+-]?[0-9]+)?",
-          "name": "constant.numeric.mlir"
+          "name": "comment.line.double-slash.verilog",
+          "match": "//.*$"
         },
         {
-          "match": "([\\W])?(0x[0-9a-zA-Z]+)",
-          "captures": {
-            "2": {
-              "name": "constant.numeric.mlir"
-            }
-          }
-        },
-        {
-          "match": "([\\Wx])?([0-9]+)",
-          "captures": {
-            "2": {
-              "name": "constant.numeric.mlir"
-            }
-          }
+          "name": "comment.block.verilog",
+          "begin": "/\\*",
+          "end": "\\*/"
         }
       ]
     },
-    "string": {
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.verilog",
+          "match": "\\b(begin|end|if|else|case|endcase|default|for|while|forever|repeat|fork|join|initial|always|always_comb|always_ff|always_latch|posedge|negedge)\\b"
+        },
+        {
+          "name": "keyword.other.verilog",
+          "match": "\\b(module|endmodule|input|output|inout|wire|reg|logic|integer|parameter|localparam|assign|function|endfunction|task|endtask)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.verilog",
       "begin": "\"",
-      "beginCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.begin.mlir"
-        }
-      },
-      "patterns": [
-        {
-          "match": "\\\\[nt\"]",
-          "name": "constant.character.escape.mlir"
-        }
-      ],
       "end": "\"",
-      "endCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.end.mlir"
-        }
-      },
-      "name": "string.quoted.double.mlir"
-    },
-    "top_level_entity": {
       "patterns": [
         {
-          "include": "#attribute_alias_def"
-        },
-        {
-          "include": "#type_alias_def"
-        },
-        {
-          "include": "#operation_body"
+          "name": "constant.character.escape.verilog",
+          "match": "\\\\[nt\\\\\"]"
         }
       ]
     },
-    "attribute_alias_def": {
-      "match": "^\\s*(\\#\\w+)\\b\\s+\\=",
-      "captures": {
-        "1": {
-          "name": "constant.language.mlir"
-        }
-      }
-    },
-    "type_alias_def": {
-      "match": "^\\s*(\\!\\w+)\\b\\s+\\=",
-      "captures": {
-        "1": {
-          "name": "entity.name.type.mlir"
-        }
-      }
-    },
-    "operation": {
+    "numbers": {
       "patterns": [
         {
-          "match": "^\\s*(\\%[\\%\\w\\:\\,\\s]+)\\s+\\=\\s+([\\w\\.\\$\\-]+)\\b",
-          "captures": {
-            "1": {
-              "patterns": [
-                {
-                  "include": "#ssa_value"
-                }
-              ]
-            },
-            "2": {
-              "name": "variable.other.enummember.mlir"
-            }
-          }
+          "name": "constant.numeric.decimal.verilog",
+          "match": "\\b\\d+'?[dD]?[0-9_]+\\b"
         },
         {
-          "match": "^\\s*([\\w\\.\\$\\-]+)\\b(?=[^\\<\\:])",
-          "name": "variable.other.enummember.mlir"
+          "name": "constant.numeric.hex.verilog", 
+          "match": "\\b\\d+'[hH][0-9a-fA-F_]+\\b"
+        },
+        {
+          "name": "constant.numeric.binary.verilog",
+          "match": "\\b\\d+'[bB][01_]+\\b"
+        },
+        {
+          "name": "constant.numeric.octal.verilog",
+          "match": "\\b\\d+'[oO][0-7_]+\\b"
         }
       ]
     },
-    "operation_body": {
+    "operators": {
       "patterns": [
         {
-          "include": "#operation"
-        },
-        {
-          "include": "#region_body_or_attr_dict"
-        },
-        {
-          "include": "#comment"
-        },
-        {
-          "include": "#ssa_value"
-        },
-        {
-          "include": "#block"
-        },
-        {
-          "include": "#attribute_value"
-        },
-        {
-          "include": "#bare_identifier"
+          "name": "keyword.operator.verilog",
+          "match": "<=[&|~><+\\-*/%^!=?:]+|\\b(and|or|not|xor|xnor|nand|nor)\\b"
         }
       ]
     },
-    "region_body_or_attr_dict": {
+    "compiler-directives": {
       "patterns": [
         {
-          "begin": "\\{\\s*(?=\\%|\\/|\\^)",
-          "patterns": [
-            {
-              "include": "#operation_body"
-            }
-          ],
-          "end": "\\}"
-        },
-        {
-          "begin": "\\{\\s*(?=[^\\}]*$)",
-          "patterns": [
-            {
-              "include": "#operation_body"
-            }
-          ],
-          "end": "\\}"
-        },
-        {
-          "begin": "\\{\\s*(?=\\%)",
-          "patterns": [
-            {
-              "include": "#operation_body"
-            }
-          ],
-          "end": "\\}"
-        },
-        {
-          "begin": "\\{\\s*(?=.*$)",
-          "patterns": [
-            {
-              "include": "#attribute_dictionary_body"
-            }
-          ],
-          "end": "\\}"
+          "name": "keyword.control.directive.verilog",
+          "match": "`\\b(include|define|undef|ifdef|ifndef|else|endif|timescale)\\b"
         }
       ]
     },
-    "attribute_value": {
+    "module-items": {
       "patterns": [
         {
-          "include": "#string"
+          "name": "entity.name.type.module.verilog",
+          "match": "\\b(module|endmodule)\\s+(\\w+)"
         },
         {
-          "include": "#comment"
+          "name": "entity.name.function.verilog", 
+          "match": "\\b(function|task)\\s+(\\w+)"
         },
         {
-          "include": "#number"
-        },
-        {
-          "match": "\\b(false|true|unit)\\b",
-          "name": "constant.language.mlir"
-        },
-        {
-          "begin": "\\b(affine_map|affine_set)\\s*\\<",
-          "beginCaptures": {
-            "1": {
-              "name": "constant.language.mlir"
-            }
-          },
-          "patterns": [
-            {
-              "match": "\\b(ceildiv|floordiv|mod|symbol)\\b",
-              "name": "entity.name.function.mlir"
-            },
-            {
-              "match": "\\b([\\w\\.\\$\\-]+)\\b",
-              "name": "variable.mlir"
-            },
-            {
-              "include": "#number"
-            }
-          ],
-          "end": "\\)\\>"
-        },
-        {
-          "begin": "\\b(dense|opaque|sparse)\\s*\\<",
-          "beginCaptures": {
-            "1": {
-              "name": "constant.language.mlir"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#attribute_value"
-            }
-          ],
-          "end": "\\>"
-        },
-        {
-          "begin": "\\[",
-          "patterns": [
-            {
-              "include": "#attribute_value"
-            },
-            {
-              "include": "#operation_body"
-            }
-          ],
-          "end": "\\]"
-        },
-        {
-          "begin": "\\{",
-          "patterns": [
-            {
-              "include": "#attribute_dictionary_body"
-            }
-          ],
-          "end": "\\}"
-        },
-        {
-          "match": "(\\@[\\w+\\$\\-\\.]*)",
-          "name": "entity.name.function.mlir"
-        },
-        {
-          "begin": "(\\#[\\w\\$\\-\\.]+)\\<",
-          "beginCaptures": {
-            "1": {
-              "name": "constant.language.mlir"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#attribute_value"
-            },
-            {
-              "match": "\\-\\>|\\>\\="
-            },
-            {
-              "include": "#bare_identifier"
-            }
-          ],
-          "end": "\\>"
-        },
-        {
-          "match": "\\#[\\w\\$\\-\\.]+\\b",
-          "name": "constant.language.mlir"
-        },
-        {
-          "include": "#type_value"
-        },
-        {
-          "begin": "\\<",
-          "patterns": [
-            {
-              "include": "#attribute_value"
-            },
-            {
-              "include": "#bare_identifier"
-            }
-          ],
-          "end": "\\>"
+          "name": "variable.other.verilog",
+          "match": "\\b(input|output|inout|wire|reg|logic)\\s+(\\w+)"
         }
       ]
     },
-    "attribute_dictionary_body": {
+    "variable-items": {
       "patterns": [
         {
-          "include": "#comment"
-        },
-        {
-          "include": "#string"
-        },
-        {
-          "include": "#attribute_value"
-        },
-        {
-          "match": "(\\%)?\\b([\\w\\.\\-\\$\\:0-9]+)\\b\\s*(?=\\=|\\,|\\})",
-          "name": "variable.other.mlir"
+          "name": "variable.other.verilog",
+          "match": "\\b(input|output|inout|wire|reg|logic)\\s+(\\w+)"
         }
       ]
-    },
-    "type_value": {
-      "patterns": [
-        {
-          "begin": "(\\![\\w\\$\\-\\.]+)\\<",
-          "beginCaptures": {
-            "1": {
-              "name": "entity.name.type.mlir"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#attribute_value"
-            },
-            {
-              "match": "\\-\\>|\\>\\=",
-              "name": "punctuation.other.mlir"
-            },
-            {
-              "include": "#bare_identifier"
-            }
-          ],
-          "end": "\\>"
-        },
-        {
-          "match": "\\![\\w\\$\\-\\.]+\\b",
-          "name": "entity.name.type.mlir"
-        },
-        {
-          "begin": "(complex|memref|tensor|tuple|vector)\\<",
-          "beginCaptures": {
-            "1": {
-              "name": "entity.name.type.mlir"
-            }
-          },
-          "patterns": [
-            {
-              "match": "[\\?x0-9\\[\\]]+",
-              "captures": {
-                "0": {
-                  "patterns": [
-                    {
-                      "include": "#number"
-                    }
-                  ]
-                }
-              }
-            },
-            {
-              "include": "#attribute_value"
-            },
-            {
-              "match": "\\-\\>|\\>\\=",
-              "name": "punctuation.other.mlir"
-            },
-            {
-              "include": "#bare_identifier"
-            }
-          ],
-          "end": "\\>"
-        },
-        {
-          "match": "bf16|f16|f32|f64|f80|f128|index|none|(u|s)?i[0-9]+",
-          "name": "entity.name.type.mlir"
-        }
-      ]
-    },
-    "bare_identifier": {
-      "match": "\\b([\\w\\.\\$\\-]+)\\b",
-      "name": "keyword.other.mlir"
-    },
-    "ssa_value": {
-      "match": "\\%[\\w\\.\\$\\:\\#]+",
-      "name": "variable.other.mlir"
-    },
-    "block": {
-      "match": "\\^[\\w\\d_$\\.-]+",
-      "name": "keyword.control.mlir"
     }
   },
-  "scopeName": "source.mlir"
+  "scopeName": "source.verilog"
 }

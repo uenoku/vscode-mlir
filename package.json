@@ -1,10 +1,10 @@
 {
-  "name": "vscode-mlir",
-  "displayName": "MLIR",
-  "description": "MLIR Language Extension",
-  "version": "0.0.11",
-  "publisher": "llvm-vs-code-extensions",
-  "homepage": "https://mlir.llvm.org/",
+  "name": "circt-verilog-lsp",
+  "displayName": "CIRCT Verilog LSP",
+  "description": "CIRCT Verilog LSP",
+  "version": "0.0.1",
+  "publisher": "circt-vs-code-extensions",
+  "homepage": "https://circt.llvm.org/",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.67.0"
@@ -13,19 +13,12 @@
     "Programming Languages"
   ],
   "keywords": [
-    "LLVM",
-    "MLIR",
+    "CIRCT",
     "Verilog",
-    "TableGen",
-    "tblgen",
-    "tablegen"
+    "MLIR"
   ],
   "activationEvents": [
-    "onFileSystem:mlir.bytecode-mlir",
-    "onCustomEditor:mlir.bytecode",
-    "onLanguage:mlir",
-    "onLanguage:verilog",
-    "onLanguage:tablegen"
+    "onLanguage:verilog"
   ],
   "main": "./out/extension",
   "scripts": {
@@ -52,37 +45,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/llvm/vscode-mlir.git"
+    "url": "https://github.com/circt/vscode-circt-verilog-lsp.git"
   },
   "contributes": {
-    "customEditors": [
-      {
-        "viewType": "mlir.bytecode",
-        "displayName": "MLIR Bytecode",
-        "priority": "default",
-        "selector": [
-          {
-            "filenamePattern": "*.mlirbc"
-          }
-        ]
-      }
-    ],
     "languages": [
-      {
-        "id": "mlir",
-        "aliases": [
-          "MLIR",
-          "mlir"
-        ],
-        "extensions": [
-          ".mlir",
-          ".mlirbc"
-        ],
-        "configuration": "./language-configuration.json"
-      },
-      {
-        "id": "mlir-injection"
-      },
       {
         "id": "verilog",
         "aliases": [
@@ -93,92 +59,50 @@
           ".sv",
           ".v"
         ],
-        "configuration": "./verilog-language-configuration.json"
-      },
-      {
-        "id": "tablegen",
-        "aliases": [
-          "TableGen",
-          "tblgen"
-        ],
-        "extensions": [
-          ".td"
-        ],
-        "configuration": "./tablegen-language-configuration.json"
+        "configuration": "./language-configuration.json"
       }
     ],
     "grammars": [
       {
-        "language": "mlir",
-        "scopeName": "source.mlir",
-        "path": "./grammar.json"
-      },
-      {
-        "language": "mlir-injection",
-        "scopeName": "markdown.mlir.codeblock",
-        "path": "markdown-grammar.json",
-        "injectTo": [
-          "text.html.markdown"
-        ],
-        "embeddedLanguages": {
-          "meta.embedded.block.mlir": "mlir",
-          "meta.embedded.block.verilog": "verilog",
-          "meta.embedded.block.tablegen": "tablegen"
-        }
-      },
-      {
-        "scopeName": "source.cpp.mlir",
-        "path": "./cpp-grammar.json",
-        "injectTo": [
-          "source.cpp"
-        ],
-        "embeddedLanguages": {
-          "source.mlir": "mlir"
-        }
-      },
-      {
         "language": "verilog",
         "scopeName": "source.verilog",
-        "path": "./verilog-grammar.json"
-      },
-      {
-        "language": "tablegen",
-        "scopeName": "source.tablegen",
-        "path": "./tablegen-grammar.json"
+        "path": "./grammar.json"
       }
     ],
     "configuration": {
       "type": "object",
-      "title": "MLIR",
+      "title": "CIRCT",
       "properties": {
-        "mlir.server_path": {
+        "circt-verilog-lsp.verilog_server_path": {
           "scope": "resource",
           "type": "string",
-          "description": "The file path of the mlir-lsp-server executable."
+          "description": "The file path of the circt-verilog-lsp executable."
         },
-        "mlir.verilog_server_path": {
-          "scope": "resource",
-          "type": "string",
-          "description": "The file path of the mlir-verilog-lsp-server executable."
-        },
-        "mlir.verilog_compilation_databases": {
+        "circt-verilog-lsp.verilog_source_location_root_directories": {
           "scope": "resource",
           "type": "array",
-          "description": "A list of `verilog_compile_commands.yml` database files containing information about .verilog files processed by the server."
+          "description": "A list of source location root directories (e.g. chisel repository root)",
+          "default": ["${workspaceFolder}"]
         },
-        "mlir.tablegen_server_path": {
+        "circt-verilog-lsp.verilog_design_root_directory": {
           "scope": "resource",
           "type": "string",
-          "description": "The file path of the tblgen-lsp-server executable."
+          "description": "The root directory of the verilog design. Recursively searches for mlir and Verilog/SV files in the path.",
+          "default": ""
         },
-        "mlir.tablegen_compilation_databases": {
+        "circt-verilog-lsp.verilog_include_directories": {
           "scope": "resource",
           "type": "array",
-          "description": "A list of `tablegen_compile_commands.yml` database files containing information about .td files processed by the server."
+          "description": "A list of include directories for the verilog files processed by the server."
         },
-        "mlir.onSettingsChanged": {
+        "circt-verilog-lsp.verilog_mlir_path": {
+          "scope": "resource",
           "type": "string",
-          "default": "prompt",
+          "description": "The MLIR file path of the circt-verilog-lsp uses for advanced features such as waveform integration."
+        },
+        "circt-verilog-lsp.onSettingsChanged": {
+          "type": "string",
+          "default": "restart",
           "description": "Action taken when a setting change requires a server restart to take effect.",
           "enum": [
             "prompt",
@@ -195,22 +119,26 @@
     },
     "commands": [
       {
-        "command": "mlir.restart",
-        "title": "mlir: Restart language server"
+        "command": "circt-verilog-lsp.restart",
+        "title": "circt-verilog-lsp: Restart language server"
       },
       {
-        "command": "mlir.viewVerilogOutput",
-        "title": "mlir-verilog: View Verilog output"
+        "command": "circt-verilog-lsp.viewVerilogOutput",
+        "title": "circt-verilog-lsp: View Verilog output"
       }, 
       {
-        "command": "mlir.loadMLIR",
-        "title": "mlir-verilog: Load MLIR"
+        "command": "circt-verilog-lsp.loadMLIR",
+        "title": "circt-verilog-lsp: Load MLIR"
+      },
+      {
+        "command": "circt-verilog-lsp.goToObjectDefinition",
+        "title": "circt-verilog-lsp: Go to object definition"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "mlir.viewVerilogOutput",
+          "command": "circt-verilog-lsp.viewVerilogOutput",
           "group": "z_commands",
           "when": "editorLangId == verilog"
         }
