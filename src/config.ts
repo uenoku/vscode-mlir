@@ -19,3 +19,4 @@ export function update<T>(key: string, value: T,
                           target?: vscode.ConfigurationTarget) {
   return vscode.workspace.getConfiguration('circt-verilog-lsp').update(key, value, target);
 }
+

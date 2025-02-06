@@ -474,6 +474,11 @@ export class MLIRContext implements vscode.Disposable {
     defaultPath: string,
     workspaceFolder: vscode.WorkspaceFolder
   ): Promise<string> {
+    // If the path is already fully resolved, there is nothing to do.
+    if (path.isAbsolute(directoryPath)) {
+      return directoryPath;
+    }
+
     if (directoryPath === "") {
       if (defaultPath === "") {
         return directoryPath;
@@ -481,18 +486,16 @@ export class MLIRContext implements vscode.Disposable {
       directoryPath = defaultPath;
     }
 
-    directoryPath = directoryPath.replace(
-      "${workspaceFolder}",
-      workspaceFolder.uri.fsPath
-    );
-
-    // If the path is already fully resolved, there is nothing to do.
-    if (path.isAbsolute(directoryPath)) {
-      return directoryPath;
+    if (workspaceFolder) {
+      directoryPath = directoryPath.replace(
+        "${workspaceFolder}",
+        workspaceFolder.uri.fsPath
+      );
+      // Return relative path to the workspace folder.
+      return path.relative(workspaceFolder.uri.fsPath, directoryPath);
     }
 
-    // Return relative path to the workspace folder.
-    return path.relative(workspaceFolder.uri.fsPath, directoryPath);
+    return directoryPath;
   }
 
   /**

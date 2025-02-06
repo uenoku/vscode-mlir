@@ -1,30 +1,45 @@
-# MLIR
+# CIRCT-Verilog-LSP
 
-The [MLIR extension](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-mlir)
-provides language IDE features for [MLIR](https://mlir.llvm.org/) related
-languages: [MLIR](#mlir---mlir-textual-assembly-format),
-[Verilog](#verilog---mlir-verilog-pattern-files), and [TableGen](#td---tablegen-files)
+The CIRCT-Verilog-LSP provides language IDE features for Verilog and SystemVerilog.
+CIRCT-Verilog-LSP is built on top of the [Slang](https://github.com/MikePopoloski/slang) and MLIR LSP library.
 
-## `.mlir` - MLIR textual assembly format:
-
-The MLIR extension adds language support for the
-[MLIR textual assembly format](https://mlir.llvm.org/docs/LangRef/):
+## `.verilog` - (System) Verilog:
 
 ### Features
 
-- Syntax highlighting for `.mlir` files and `mlir` markdown blocks
+- Syntax highlighting for `.v` and `.sv` files and markdown blocks
 - go-to-definition and cross references
-- Detailed information when hovering over IR entities
-- Outline and navigation of symbols and symbol tables
-- Code completion
-- Live parser and verifier diagnostics
+- Cross reference CIRCT emitted locations 
+- User providable inlay hints
+- Detailed information when hovering over variables
+- ImportVerilog integration
+- Waveform viewer (surfer) integration
 
 #### Diagnostics
 
-The language server actively runs verification on the IR as you type, showing
-any generated diagnostics in-place.
+The language server runs diagnostics ran by slang.
 
-![IMG](https://mlir.llvm.org/mlir-lsp-server/diagnostics.png)
+![IMG](./diag.png)
+
+##### Find definition
+
+Jump to the definition of the IR entity under the cursor. A few examples are
+shown below:
+
+- SSA Values
+
+![SSA](https://mlir.llvm.org/mlir-lsp-server/goto_def_ssa.gif)
+
+
+- Symbol References
+
+![Symbols](https://mlir.llvm.org/mlir-lsp-server/goto_def_symbol.gif)
+
+The definition of an operation will also take into account the source location
+attached, allowing for navigating into the source file that generated the
+operation.
+
+![External Locations](https://mlir.llvm.org/mlir-lsp-server/goto_def_external.gif)
 
 ##### Automatically insert `expected-` diagnostic checks
 
@@ -36,13 +51,7 @@ automatically inserting the checks for diagnostics it knows about.
 
 ![IMG](https://mlir.llvm.org/mlir-lsp-server/diagnostics_action.gif)
 
-#### Code completion
-
-The language server provides suggestions as you type, offering completions for
-dialect constructs (such as attributes, operations, and types), block names, SSA
-value names, keywords, and more.
-
-![IMG](https://mlir.llvm.org/mlir-lsp-server/code_complete.gif)
+## Advanced Features -- Waveform viewer
 
 #### Cross-references
 
@@ -50,24 +59,6 @@ Cross references allow for navigating the use/def chains of SSA values (i.e.
 operation results and block arguments), [Symbols](../SymbolsAndSymbolTables.md),
 and Blocks.
 
-##### Find definition
-
-Jump to the definition of the IR entity under the cursor. A few examples are
-shown below:
-
-- SSA Values
-
-![SSA](https://mlir.llvm.org/mlir-lsp-server/goto_def_ssa.gif)
-
-- Symbol References
-
-![Symbols](https://mlir.llvm.org/mlir-lsp-server/goto_def_symbol.gif)
-
-The definition of an operation will also take into account the source location
-attached, allowing for navigating into the source file that generated the
-operation.
-
-![External Locations](https://mlir.llvm.org/mlir-lsp-server/goto_def_external.gif)
 
 ##### Find references
 
