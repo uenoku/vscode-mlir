@@ -61,29 +61,12 @@ export class MLIRContext implements vscode.Disposable {
     );
   }
 
-  /**
-   * Open or return a language server for the given uri and language.
-   */
-  async getOrActivateLanguageClient(
-    uri: vscode.Uri,
-    languageId: string
+  async getOrActivateLanguageClientForWorkspaceFolder(
+    workspaceFolder: vscode.WorkspaceFolder,
+    languageId: string,
+    serverSettingName: string
   ): Promise<vscodelc.LanguageClient> {
-    let serverSettingName: string;
-    if (languageId === "verilog") {
-      serverSettingName = "verilog_server_path";
-    } else {
-      return null;
-    }
 
-    // Check the scheme of the uri.
-    let validSchemes = ["file"];
-    if (!validSchemes.includes(uri.scheme)) {
-      return null;
-    }
-
-    // Resolve the workspace folder if this document is in one. We use the
-    // workspace folder when determining if a server needs to be started.
-    let workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
     let workspaceFolderStr = workspaceFolder
       ? workspaceFolder.uri.toString()
       : "";
@@ -106,6 +89,41 @@ export class MLIRContext implements vscode.Disposable {
       folderContext.clients.set(languageId, client);
     }
     return client;
+
+  }
+
+  async getServerSettingName(languageId: string): Promise<string> {
+    if (languageId === "verilog") {
+      return "verilog_server_path";
+    }
+    return "";
+  }
+
+  /**
+   * Open or return a language server for the given uri and language.
+   */
+  async getOrActivateLanguageClient(
+    uri: vscode.Uri,
+    languageId: string
+  ): Promise<vscodelc.LanguageClient> {
+    let serverSettingName = await this.getServerSettingName(languageId);
+    if (serverSettingName === "") {
+      return null;
+    }
+
+    // Check the scheme of the uri.
+    let validSchemes = ["file"];
+    if (!validSchemes.includes(uri.scheme)) {
+      return null;
+    }
+
+    // Resolve the workspace folder if this document is in one. We use the
+    // workspace folder when determining if a server needs to be started.
+    return this.getOrActivateLanguageClientForWorkspaceFolder(
+      vscode.workspace.getWorkspaceFolder(uri),
+      languageId,
+      serverSettingName
+    );
   }
 
   /**
@@ -123,6 +141,11 @@ export class MLIRContext implements vscode.Disposable {
       workspaceFolder,
       ""
     );
+    configsToWatch.push(`${languageName}_include_directories`);
+    configsToWatch.push(`${languageName}_design_root_directory`);
+    configsToWatch.push(`${languageName}_source_location_root_directories`);
+    configsToWatch.push(`${languageName}_mlir_path`);
+    configsToWatch.push(`${languageName}_server_path`);
 
     let mlir_path = [];
     let verilogIncludeDirs = [];
@@ -162,8 +185,6 @@ export class MLIRContext implements vscode.Disposable {
       }
       // Resolve relative path to the workspace folder.
       let design_root_path = await this.resolveDirectory(design_root, "", workspaceFolder);
-      console.error("design_root_path", design_root_path);
-
       await findIncludeDirs(design_root_path);
     }
 
@@ -190,7 +211,7 @@ export class MLIRContext implements vscode.Disposable {
       )
     );
 
-    configsToWatch.push(`${languageName}_include_directories`);
+
 
     // TODO: Don't watch the include directories for now.
     // pathsToWatch.push(...result_include_dirs);
@@ -202,16 +223,16 @@ export class MLIRContext implements vscode.Disposable {
     );
 
     // Add debug logging to help diagnose the issue
-    console.error("Language Name:", languageName);
-    console.error(
-      "Config Key:",
-      `${languageName}_source_location_root_directories`
-    );
-    console.error(
-      "Source Location Directories:",
-      sourceLocationRootDirectories
-    );
-    console.error("Workspace Folder:", workspaceFolder.uri.fsPath);
+    // console.error("Language Name:", languageName);
+    // console.error(
+    //   "Config Key:",
+    //   `${languageName}_source_location_root_directories`
+    // );
+    // console.error(
+    //   "Source Location Directories:",
+    //   sourceLocationRootDirectories
+    // );
+    // console.error("Workspace Folder:", workspaceFolder.uri.fsPath);
 
     sourceLocationRootDirectories.filter(
       (sourceLocationRootDirectory) => sourceLocationRootDirectory !== ""
@@ -233,7 +254,6 @@ export class MLIRContext implements vscode.Disposable {
       )
     );
 
-    configsToWatch.push(`${languageName}_source_location_root_directories`);
     // TODO: Don't watch the source location root directories for now.
     // pathsToWatch.push(...result_source_location_root_directories);
 
@@ -263,7 +283,6 @@ export class MLIRContext implements vscode.Disposable {
         });
     }
 
-    configsToWatch.push(`${languageName}_mlir_path`);
     pathsToWatch.push(mlirPath);
 
   }
