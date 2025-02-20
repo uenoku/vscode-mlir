@@ -28,7 +28,7 @@ export class GoToObjectDefinitionCommand extends Command {
   }
 
   async execute(args: any) {
-    let verilogClient;
+    let verilogClient: vscodelc.LanguageClient;
 
     for (const editor of vscode.window.visibleTextEditors) {
       if (editor.document.languageId != "verilog") {

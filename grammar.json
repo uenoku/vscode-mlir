@@ -86,6 +86,10 @@
         {
           "name": "constant.numeric.octal.verilog",
           "match": "\\b\\d+'[oO][0-7_]+\\b"
+        },
+        {
+          "name": "constant.numeric.normal.verilog",
+          "match": "\\b\\d+\\b"
         }
       ]
     },
@@ -125,7 +129,7 @@
       "patterns": [
         {
           "name": "variable.other.verilog",
-          "match": "\\b(input|output|inout|wire|reg|logic)\\s+(\\w+)"
+          "match": "\\b(input|output|inout|wire|reg|logic|automatic)\\s+(\\w+)"
         }
       ]
     }

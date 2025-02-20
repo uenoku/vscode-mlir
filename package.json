@@ -38,7 +38,7 @@
     "@types/mocha": "^7.0.2",
     "@types/node": "^14.17.0",
     "@types/vscode": "~1.67.0",
-    "@vscode/vsce": "^2.19.0",
+    "@vscode/vsce": "^2.32.0",
     "clang-format": "^1.8.0",
     "typescript": "^4.6.4",
     "vscode-test": "^1.3.0"
@@ -76,13 +76,16 @@
         "circt-verilog-lsp.verilog_server_path": {
           "scope": "resource",
           "type": "string",
-          "description": "The file path of the circt-verilog-lsp executable."
+          "description": "The file path of the circt-verilog-lsp executable.",
+          "default": ""
         },
         "circt-verilog-lsp.verilog_source_location_root_directories": {
           "scope": "resource",
           "type": "array",
           "description": "A list of source location root directories (e.g. chisel repository root)",
-          "default": ["${workspaceFolder}"]
+          "default": [
+            "${workspaceFolder}"
+          ]
         },
         "circt-verilog-lsp.verilog_design_root_directory": {
           "scope": "resource",
@@ -94,6 +97,11 @@
           "scope": "resource",
           "type": "array",
           "description": "A list of include directories for the verilog files processed by the server."
+        },
+        "circt-verilog-lsp.verilog_static_inlay_hint_files": {
+          "scope": "resource",
+          "type": "array",
+          "description": "A list of files for adding inlay hints to objects"
         },
         "circt-verilog-lsp.verilog_mlir_path": {
           "scope": "resource",
@@ -125,14 +133,6 @@
       {
         "command": "circt-verilog-lsp.viewVerilogOutput",
         "title": "circt-verilog-lsp: View Verilog output"
-      }, 
-      {
-        "command": "circt-verilog-lsp.loadMLIR",
-        "title": "circt-verilog-lsp: Load MLIR"
-      },
-      {
-        "command": "circt-verilog-lsp.goToObjectDefinition",
-        "title": "circt-verilog-lsp: Go to object definition"
       }
     ],
     "menus": {

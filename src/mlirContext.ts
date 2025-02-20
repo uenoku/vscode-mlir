@@ -142,6 +142,7 @@ export class MLIRContext implements vscode.Disposable {
     configsToWatch.push(`${languageName}_include_directories`);
     configsToWatch.push(`${languageName}_design_root_directory`);
     configsToWatch.push(`${languageName}_source_location_root_directories`);
+    configsToWatch.push(`${languageName}_static_inlay_hints_files`);
     configsToWatch.push(`${languageName}_mlir_path`);
     configsToWatch.push(`${languageName}_server_path`);
 
@@ -167,16 +168,7 @@ export class MLIRContext implements vscode.Disposable {
 
           if (file.isDirectory()) {
             let dir_path = path.join(parent, file.name);
-            findIncludeDirs(dir_path);
-            const files = await fs.promises.readdir(dir_path, {
-              withFileTypes: true,
-            });
-            let contain_sv_or_v = false;
-            for (const file of files) {
-              if (file.name.endsWith(".sv") || file.name.endsWith(".v")) {
-                contain_sv_or_v = true;
-              }
-            }
+            await findIncludeDirs(dir_path);
           }
         }
         if (exist_verilog) verilogIncludeDirs.push(parent);
@@ -222,18 +214,6 @@ export class MLIRContext implements vscode.Disposable {
       []
     );
 
-    // Add debug logging to help diagnose the issue
-    // console.error("Language Name:", languageName);
-    // console.error(
-    //   "Config Key:",
-    //   `${languageName}_source_location_root_directories`
-    // );
-    // console.error(
-    //   "Source Location Directories:",
-    //   sourceLocationRootDirectories
-    // );
-    // console.error("Workspace Folder:", workspaceFolder.uri.fsPath);
-
     sourceLocationRootDirectories.filter(
       (sourceLocationRootDirectory) => sourceLocationRootDirectory !== ""
     );
@@ -253,6 +233,34 @@ export class MLIRContext implements vscode.Disposable {
           `--source-location-include-dir=${sourceLocationRootDirectory}`
       )
     );
+
+    let inlayHintsFiles = config.get<string[]>(
+      `${languageName}_static_inlay_hint_files`,
+      workspaceFolder,
+      []
+    );
+
+    inlayHintsFiles.filter(
+      (inlayHintsFile) => inlayHintsFile !== ""
+    );
+    let result_inlay_hints_files = [];
+    for (const inlayHintFile of inlayHintsFiles) {
+      let resolvedPath = await this.resolvePath(
+        inlayHintFile,
+        "",
+        workspaceFolder
+      );
+      if(resolvedPath !== "")
+        result_inlay_hints_files.push(resolvedPath);
+    }
+
+    additionalServerArgs.push(
+      ...result_inlay_hints_files.map(
+        (hint) =>
+          `--static-inlay-hint-files=${hint}`
+      )
+    );
+
 
     // TODO: Don't watch the source location root directories for now.
     // pathsToWatch.push(...result_source_location_root_directories);
